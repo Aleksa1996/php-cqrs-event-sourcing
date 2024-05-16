@@ -1,0 +1,118 @@
+version: "3.8"
+
+services:
+
+# ---------------------------------------------------------------------------- #
+#                                 Proxy                                        #
+# ---------------------------------------------------------------------------- #
+    proxy:
+        container_name: proxy
+        image: traefik:v3.0.0
+        volumes:
+            - '/var/run/docker.sock:/var/run/docker.sock:ro'
+        command: 
+            - '--api.insecure=true'
+            - '--providers.docker=true'
+            - '--providers.docker.exposedbydefault=false'
+            - '--entrypoints.web.address=:80'
+        ports:
+            - '80:80'
+            - '443:443'
+            - '8080:8080'
+        restart: unless-stopped
+        networks:
+            - main_net
+# ---------------------------------------------------------------------------- #
+#                                 DB                                           #
+# ---------------------------------------------------------------------------- #
+    postgres:
+        container_name: postgres
+        image: postgres:13.15-bookworm
+        volumes:
+            - ./.docker/persistence/postgres:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        restart: unless-stopped
+        environment:
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=root
+        networks:
+            - main_net
+# ---------------------------------------------------------------------------- #
+#                                 DB                                           #
+# ---------------------------------------------------------------------------- #
+    mongo:
+        container_name: mongo
+        image: mongo:7.0.9-jammy
+        volumes:
+            - ./.docker/persistence/mongo:/data/db
+        ports:
+            - "27017:27017"
+        restart: unless-stopped
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=root
+        networks:
+            - main_net
+# ---------------------------------------------------------------------------- #
+#                                 Adminer                                      #
+# ---------------------------------------------------------------------------- #
+    adminer:
+        container_name: adminer
+        image: adminer:latest
+        restart: unless-stopped
+        networks:
+            - main_net
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.adminer.entrypoints=web"
+            - "traefik.http.routers.adminer.rule=Host(`adminer.local`)"
+            - "traefik.http.routers.adminer.service=adminer"
+            - "traefik.http.services.adminer.loadbalancer.server.port=8080"
+# ---------------------------------------------------------------------------- #
+#                            Message broker                                    #
+# ---------------------------------------------------------------------------- #
+    message-broker:
+        container_name: message-broker
+        image: rabbitmq:3.12.14-management-alpine
+        restart: unless-stopped
+        environment:
+            - RABBITMQ_DEFAULT_USER=root
+            - RABBITMQ_DEFAULT_PASS=root
+        networks:
+            - main_net
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.message-broker.entrypoints=web"
+            - "traefik.http.routers.message-broker.rule=Host(`message-broker.local`)"
+            - "traefik.http.routers.message-broker.service=message-broker"
+            - "traefik.http.services.message-broker.loadbalancer.server.port=15672"
+# ---------------------------------------------------------------------------- #
+#                                 Catalog                                      #
+# ---------------------------------------------------------------------------- #
+    catalog-service:
+        container_name: catalog-service
+        image: local-build/catalog-service
+        build:
+            context: ./service/catalog
+            dockerfile: Dockerfile
+        volumes:
+            - ./service/catalog:/var/www/html
+        restart: unless-stopped
+        networks:
+            - main_net
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.catalog-service.entrypoints=web"
+            - "traefik.http.routers.catalog-service.rule=Host(`catalog-service.local`)"
+            - "traefik.http.routers.catalog-service.service=catalog-service"
+            - "traefik.http.services.catalog-service.loadbalancer.server.port=80"
+# ---------------------------------------------------------------------------- #
+#                                 Network                                      #
+# ---------------------------------------------------------------------------- #
+networks:
+    main_net:
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.16.240.0/24

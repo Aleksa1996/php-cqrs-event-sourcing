@@ -1,0 +1,39 @@
+version: '3'
+
+server:
+    command: "php public/index.php"
+    env:
+        - APP_RUNTIME: Baldinof\RoadRunnerBundle\Runtime\Runtime
+        - APP_ENV: dev
+
+rpc:
+    listen: tcp://127.0.0.1:6001
+
+http:
+    address: 0.0.0.0:80
+    middleware: [ "gzip" ]
+    uploads:
+        forbid: [ ".php", ".exe", ".bat", ".sh" ]
+    pool:
+        num_workers: 1
+        debug: true
+
+status:
+    address: localhost:2114
+
+logs:
+    mode: development
+    channels:
+        http:
+            level: debug
+        server:
+            mode: raw
+            level: info
+
+metrics:
+    address: "0.0.0.0:9180"
+
+endure:
+    grace_period: 1200s
+    print_graph: false
+    log_level: error

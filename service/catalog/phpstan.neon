@@ -1,0 +1,20 @@
+parameters:
+    level: 5
+    paths:
+        - src
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    strictRules:
+        disallowedConstructs: false
+    editorUrl: 'vscode://file/%%file%%:%%line%%'
+    polluteScopeWithLoopInitialAssignments: false
+    polluteScopeWithAlwaysIterableForeach: false
+    checkAlwaysTrueCheckTypeFunctionCall: true
+    checkAlwaysTrueInstanceof: true
+    checkAlwaysTrueStrictComparison: true
+    checkExplicitMixedMissingReturn: true
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+    reportMaybesInMethodSignatures: false
+    reportStaticMethodSignatures: true
+    reportMaybesInPropertyPhpDocTypes: true
