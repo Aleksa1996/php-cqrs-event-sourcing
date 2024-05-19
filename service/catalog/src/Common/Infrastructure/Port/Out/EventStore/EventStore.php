@@ -9,14 +9,17 @@ use App\Catalog\Domain\Product\PidChanged;
 use App\Catalog\Domain\Product\NameChanged;
 use App\Catalog\Domain\Product\TypeChanged;
 use App\Catalog\Domain\Product\PriceChanged;
+use App\Common\Application\Bus\Event\EventBus;
 use App\Common\Domain\OptimisticLockingException;
 use App\Catalog\Domain\Product\DescriptionChanged;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Common\Domain\Event\EventStore as IEventStore;
+use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
+use Symfony\Component\Messenger\Stamp\DispatchAfterCurrentBusStamp;
 
 class EventStore implements IEventStore
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly SerializerInterface $serializer) {}
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly SerializerInterface $serializer, private readonly EventBus $eventBus) {}
 
     public function commit(Id $id, array $events, int $version): void
     {
@@ -38,11 +41,12 @@ class EventStore implements IEventStore
             );
 
             $this->entityManager->persist($storedDomainEvent);
-            $this->entityManager->flush();
         }
+
+        $this->publish($events);
     }
 
-    public function getEvents(Id $id): array
+    public function get(Id $id): array
     {
         $storedDomainEvents = $this->entityManager->getRepository(StoredDomainEvent::class)->findBy(['entityId' => $id], ['version' => 'asc']);
 
@@ -77,5 +81,15 @@ class EventStore implements IEventStore
         }
 
         return $mapping[$event->getType()];
+    }
+
+    private function publish(array $events): void
+    {
+        foreach ($events as $event) {
+            $this->eventBus->handle(
+                $event,
+                [new DispatchAfterCurrentBusStamp(), new TransportNamesStamp('event_store')]
+            );
+        }
     }
 }

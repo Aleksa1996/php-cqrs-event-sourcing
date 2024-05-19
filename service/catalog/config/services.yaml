@@ -12,8 +12,13 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         public: false
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+    App\Common\Infrastructure\Bus\Event\SymfonyEventBus:
+        class: App\Common\Infrastructure\Bus\Event\SymfonyEventBus
+        arguments:
+            $messageBus: '@event.bus'
+
+    App\Common\Application\Bus\Event\EventBus: '@App\Common\Infrastructure\Bus\Event\SymfonyEventBus'
+
     App\Catalog\Infrastructure\Port\In\Controller\ProductController:
         class: App\Catalog\Infrastructure\Port\In\Controller\ProductController
 
@@ -24,6 +29,9 @@ services:
     App\Catalog\Infrastructure\Persistence\Product\ProductRepository:
         class: App\Catalog\Infrastructure\Persistence\Product\ProductRepository
     App\Catalog\Domain\Product\ProductRepository: '@App\Catalog\Infrastructure\Persistence\Product\ProductRepository'
+
+    App\Catalog\Infrastructure\Projection\Product\ProductEventListener:
+        class: App\Catalog\Infrastructure\Projection\Product\ProductEventListener
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -14,20 +14,19 @@ class ProductRepository implements IProductRepository
 
     public function get(Id $id): ?AggregateRoot
     {
-        $domainEvents = $this->eventStore->getEvents($id);
+        $events = $this->eventStore->get($id);
 
-        if (empty($domainEvents)) {
+        if (empty($events)) {
             return null;
         }
 
-        return Product::reconstruct($domainEvents);
+        return Product::reconstruct($events);
     }
 
     public function add(AggregateRoot $aggregate): void
     {
-        $domainEvents = $aggregate->dequeueRecordedDomainEvents();
+        $events = $aggregate->dequeueRecordedDomainEvents();
 
-        $this->eventStore->commit($aggregate->getId(), $domainEvents, $aggregate->getOptimisticConcurrencyVersion());
-        // $this->postProjection->project($domainEvents);
+        $this->eventStore->commit($aggregate->getId(), $events, $aggregate->getOptimisticConcurrencyVersion());
     }
 }
