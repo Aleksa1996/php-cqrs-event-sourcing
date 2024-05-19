@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[AsController]
-#[Route('/products', name: 'products_')]
+#[Route('/api/v1/products', name: 'products_')]
 class ProductController extends AbstractController
 {
     public function __construct(private readonly ProductRepository $productRepository) {}
@@ -44,7 +44,6 @@ class ProductController extends AbstractController
         // $product->changePrice(new Price(1.2));
         // $product->changeDescription('heeeeeeeehe');
         // $this->productRepository->add($product);
-
 
         return $this->json([
             'message' => 'Welcome to your new controller!',

@@ -16,9 +16,7 @@ use App\Common\Domain\Event\EventStore as IEventStore;
 
 class EventStore implements IEventStore
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly SerializerInterface $serializer)
-    {
-    }
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly SerializerInterface $serializer) {}
 
     public function commit(Id $id, array $events, int $version): void
     {
