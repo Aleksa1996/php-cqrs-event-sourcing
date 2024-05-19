@@ -17,6 +17,13 @@ services:
     App\Infrastructure\Controller\ProductController:
         class: App\Infrastructure\Controller\ProductController
 
+    App\Infrastructure\Persistence\EventStore\EventStore:
+        class: App\Infrastructure\Persistence\EventStore\EventStore
+    App\Domain\Common\EventStore: '@App\Infrastructure\Persistence\EventStore\EventStore'
+
+    App\Infrastructure\Persistence\Product\ProductRepository:
+        class: App\Infrastructure\Persistence\Product\ProductRepository
+    App\Domain\ProductRepository: '@App\Infrastructure\Persistence\Product\ProductRepository'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
