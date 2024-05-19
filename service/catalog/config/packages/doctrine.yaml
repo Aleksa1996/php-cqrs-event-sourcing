@@ -9,7 +9,7 @@ doctrine:
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
         types:
-            uuid: App\Infrastructure\Persistence\Doctrine\Type\IdType
+            uuid: App\Common\Infrastructure\Persistence\Doctrine\Type\Id
 
     orm:
         auto_generate_proxy_classes: true
@@ -21,9 +21,9 @@ doctrine:
         mappings:
             EventStore:
                 type: attribute
-                dir: '%kernel.project_dir%/src/Infrastructure/Persistence/EventStore'
+                dir: '%kernel.project_dir%/src/Common/Infrastructure/Port/Out/EventStore'
                 is_bundle: false
-                prefix: App\Infrastructure\Persistence\EventStore
+                prefix: App\Common\Infrastructure\Port\Out\EventStore
         controller_resolver:
             auto_mapping: true
 
