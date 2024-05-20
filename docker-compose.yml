@@ -7,16 +7,16 @@ services:
         container_name: proxy
         image: traefik:v3.0.0
         volumes:
-            - '/var/run/docker.sock:/var/run/docker.sock:ro'
+            - "/var/run/docker.sock:/var/run/docker.sock:ro"
         command: 
-            - '--api.insecure=true'
-            - '--providers.docker=true'
-            - '--providers.docker.exposedbydefault=false'
-            - '--entrypoints.web.address=:80'
+            - "--api.insecure=true"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--entrypoints.web.address=:80"
         ports:
-            - '80:80'
-            - '443:443'
-            - '8080:8080'
+            - "80:80"
+            - "443:443"
+            - "8080:8080"
         restart: unless-stopped
         networks:
             - main_net
@@ -52,6 +52,24 @@ services:
             - MONGO_INITDB_ROOT_PASSWORD=root
         networks:
             - main_net
+# ---------------------------------------------------------------------------- #
+#                                 MinIO                                        #
+# ---------------------------------------------------------------------------- #
+    minio:
+        container_name: minio
+        image: minio/minio
+        volumes:
+            - ./.docker/persistence/minio:/data
+        command: "server /data --console-address ':9001'"
+        restart: unless-stopped
+        networks:
+            - main_net
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.minio.entrypoints=web"
+            - "traefik.http.routers.minio.rule=Host(`minio.local`)"
+            - "traefik.http.routers.minio.service=minio"
+            - "traefik.http.services.minio.loadbalancer.server.port=9001"
 # ---------------------------------------------------------------------------- #
 #                                 Adminer                                      #
 # ---------------------------------------------------------------------------- #
