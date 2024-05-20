@@ -191,36 +191,43 @@ class Product extends AggregateRoot
         $this->type = $event->getType();
         $this->status = $event->getStatus();
         $this->price = $event->getPrice();
+        $this->createdOn = $event->getOccurredOn();
+        $this->updatedOn = $event->getOccurredOn();
     }
 
     // @phpstan-ignore-next-line
     private function applyNameChanged(NameChanged $event): void
     {
         $this->name = $event->getName();
+        $this->updatedOn = $event->getOccurredOn();
     }
 
     // @phpstan-ignore-next-line
     private function applyDescriptionChanged(DescriptionChanged $event): void
     {
         $this->description = $event->getDescription();
+        $this->updatedOn = $event->getOccurredOn();
     }
 
     // @phpstan-ignore-next-line
     private function applyPidChanged(PidChanged $event): void
     {
         $this->pid = $event->getPid();
+        $this->updatedOn = $event->getOccurredOn();
     }
 
     // @phpstan-ignore-next-line
     private function applyPriceChanged(PriceChanged $event): void
     {
         $this->price = $event->getPrice();
+        $this->updatedOn = $event->getOccurredOn();
     }
 
     // @phpstan-ignore-next-line
     private function applyTypeChanged(TypeChanged $event): void
     {
         $this->type = $event->getType();
+        $this->updatedOn = $event->getOccurredOn();
     }
 
     public static function reconstruct(array $domainEvents): Product

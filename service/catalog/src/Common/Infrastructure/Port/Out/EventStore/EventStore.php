@@ -19,9 +19,7 @@ use Symfony\Component\Messenger\Stamp\DispatchAfterCurrentBusStamp;
 
 class EventStore implements IEventStore
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly SerializerInterface $serializer, private readonly EventBus $eventBus)
-    {
-    }
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly SerializerInterface $serializer, private readonly EventBus $eventBus) {}
 
     public function commit(Id $id, array $events, int $version): void
     {
