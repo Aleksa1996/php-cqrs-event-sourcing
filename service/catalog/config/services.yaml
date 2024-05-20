@@ -30,8 +30,8 @@ services:
         class: App\Catalog\Infrastructure\Persistence\Product\ProductRepository
     App\Catalog\Domain\Product\ProductRepository: '@App\Catalog\Infrastructure\Persistence\Product\ProductRepository'
 
-    App\Catalog\Infrastructure\Projection\Product\ProductEventListener:
-        class: App\Catalog\Infrastructure\Projection\Product\ProductEventListener
+    App\Catalog\Infrastructure\Projection\Product\ProductProjection:
+        class: App\Catalog\Infrastructure\Projection\Product\ProductProjection
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Catalog\Infrastructure\Projection\Product\ProductMessageListener:
+        class: App\Catalog\Infrastructure\Projection\Product\ProductMessageListener

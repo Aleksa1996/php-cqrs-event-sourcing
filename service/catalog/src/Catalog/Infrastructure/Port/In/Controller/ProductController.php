@@ -28,15 +28,15 @@ class ProductController extends AbstractController
     #[Route(methods: ['GET'], name: 'collection')]
     public function collection(#[MapQueryString] Query $query = new Query()): JsonResponse
     {
-        // $this->productRepository->add(Product::create(
-        //     new Id(),
-        //     'Product name',
-        //     'Product description',
-        //     new Pid(PidPrefix::PRO, 1),
-        //     Type::PHYSICAL,
-        //     Status::IN_DEVELOPMENT,
-        //     new Price(13.50)
-        // ));
+        $this->productRepository->add(Product::create(
+            new Id(),
+            'Product name',
+            'Product description',
+            new Pid(PidPrefix::PRO, 1),
+            Type::PHYSICAL,
+            Status::IN_DEVELOPMENT,
+            new Price(13.50)
+        ));
 
         // $product = $this->productRepository->get(new Id('0b941490-08f9-4dcb-a072-a69958aaedb2'));
 
