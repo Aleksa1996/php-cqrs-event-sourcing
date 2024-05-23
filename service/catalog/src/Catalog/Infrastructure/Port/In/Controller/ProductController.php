@@ -18,16 +18,18 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Catalog\Application\Projection\ProductProjectionRepository;
 
 #[AsController]
 #[Route('/api/v1/products', name: 'products_')]
 class ProductController extends AbstractController
 {
-    public function __construct(private readonly ProductRepository $productRepository) {}
+    public function __construct(private readonly ProductRepository $productRepository, private readonly ProductProjectionRepository $productProjectionRepository) {}
 
     #[Route(methods: ['GET'], name: 'collection')]
     public function collection(#[MapQueryString] Query $query = new Query()): JsonResponse
     {
+        // dd($this->productProjectionRepository->query());
         // $product = Product::create(
         //     new Id(),
         //     'Product name',

@@ -19,19 +19,28 @@ services:
 
     App\Common\Application\Bus\Event\EventBus: '@App\Common\Infrastructure\Bus\Event\SymfonyEventBus'
 
+    # Controller
     App\Catalog\Infrastructure\Port\In\Controller\ProductController:
         class: App\Catalog\Infrastructure\Port\In\Controller\ProductController
 
+    # Event store
     App\Common\Infrastructure\Port\Out\EventStore\EventStore:
         class: App\Common\Infrastructure\Port\Out\EventStore\EventStore
     App\Common\Domain\Event\EventStore: '@App\Common\Infrastructure\Port\Out\EventStore\EventStore'
 
+    # Aggregate Repository
     App\Catalog\Infrastructure\Persistence\Product\ProductRepository:
         class: App\Catalog\Infrastructure\Persistence\Product\ProductRepository
     App\Catalog\Domain\Product\ProductRepository: '@App\Catalog\Infrastructure\Persistence\Product\ProductRepository'
 
-    App\Catalog\Infrastructure\Projection\Product\ProductProjection:
-        class: App\Catalog\Infrastructure\Projection\Product\ProductProjection
+    # Projection
+    App\Catalog\Infrastructure\Persistence\Projection\ProductProjector:
+        class: App\Catalog\Infrastructure\Persistence\Projection\ProductProjector
+    App\Catalog\Application\Projection\ProductProjector: '@App\Catalog\Infrastructure\Persistence\Projection\ProductProjector'
 
-    App\Catalog\Infrastructure\Projection\Product\ProductMessageListener:
-        class: App\Catalog\Infrastructure\Projection\Product\ProductMessageListener
+    App\Catalog\Infrastructure\Persistence\Projection\DoctrineProductProjectionRepository:
+        class: App\Catalog\Infrastructure\Persistence\Projection\DoctrineProductProjectionRepository
+    App\Catalog\Application\Projection\ProductProjectionRepository: '@App\Catalog\Infrastructure\Persistence\Projection\DoctrineProductProjectionRepository'
+
+    App\Catalog\Application\Projection\ProductProjectorMessageListener:
+        class: App\Catalog\Application\Projection\ProductProjectorMessageListener

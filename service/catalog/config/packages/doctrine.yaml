@@ -24,6 +24,11 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Common/Infrastructure/Port/Out/EventStore'
                 is_bundle: false
                 prefix: App\Common\Infrastructure\Port\Out\EventStore
+            ProductProjection:
+                type: xml
+                dir: '%kernel.project_dir%/src/Catalog/Infrastructure/Persistence/Projection/Mapping'
+                is_bundle: false
+                prefix: App\Catalog\Application\Projection
         controller_resolver:
             auto_mapping: true
 

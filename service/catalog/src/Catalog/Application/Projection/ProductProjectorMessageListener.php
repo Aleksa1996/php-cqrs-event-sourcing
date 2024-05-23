@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Catalog\Infrastructure\Projection\Product;
+namespace App\Catalog\Application\Projection;
 
 use App\Catalog\Domain\Product\Created;
 use App\Catalog\Domain\Product\PidChanged;
@@ -10,13 +10,13 @@ use App\Catalog\Domain\Product\PriceChanged;
 use App\Catalog\Domain\Product\DescriptionChanged;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class ProductMessageListener
+class ProductProjectorMessageListener
 {
-    public function __construct(private readonly ProductProjection $productProjection) {}
+    public function __construct(private readonly ProductProjector $productProjector) {}
 
     #[AsMessageHandler]
     public function onUserEvent(Created|NameChanged|DescriptionChanged|PidChanged|PriceChanged|TypeChanged $event): void
     {
-        $this->productProjection->project($event);
+        $this->productProjector->project($event);
     }
 }
