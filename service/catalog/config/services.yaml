@@ -34,13 +34,30 @@ services:
     App\Catalog\Domain\Product\ProductRepository: '@App\Catalog\Infrastructure\Persistence\Product\ProductRepository'
 
     # Projection
-    App\Catalog\Infrastructure\Persistence\Projection\ProductProjector:
-        class: App\Catalog\Infrastructure\Persistence\Projection\ProductProjector
-    App\Catalog\Application\Projection\ProductProjector: '@App\Catalog\Infrastructure\Persistence\Projection\ProductProjector'
+    App\Catalog\Infrastructure\Persistence\Projection\DoctrineOrmProductProjectionRepository:
+        class: App\Catalog\Infrastructure\Persistence\Projection\DoctrineOrmProductProjectionRepository
 
-    App\Catalog\Infrastructure\Persistence\Projection\DoctrineProductProjectionRepository:
-        class: App\Catalog\Infrastructure\Persistence\Projection\DoctrineProductProjectionRepository
-    App\Catalog\Application\Projection\ProductProjectionRepository: '@App\Catalog\Infrastructure\Persistence\Projection\DoctrineProductProjectionRepository'
+    App\Catalog\Infrastructure\Persistence\Projection\DoctrineOdmProductProjectionRepository:
+        class: App\Catalog\Infrastructure\Persistence\Projection\DoctrineOdmProductProjectionRepository
+
+    app.catalog.Infrastructure.persistence.projection.doctrine_orm_product_projector:
+        class: App\Catalog\Infrastructure\Persistence\Projection\ProductProjector
+        arguments:
+            $productProjectionRepository: '@App\Catalog\Infrastructure\Persistence\Projection\DoctrineOrmProductProjectionRepository'
+
+    app.catalog.Infrastructure.persistence.projection.doctrine_odm_product_projector:
+        class: App\Catalog\Infrastructure\Persistence\Projection\ProductProjector
+        arguments:
+            $productProjectionRepository: '@App\Catalog\Infrastructure\Persistence\Projection\DoctrineOdmProductProjectionRepository'
+
+    app.catalog.Infrastructure.persistence.projection.product_projector_collection:
+        class: App\Common\Infrastructure\Persistence\Projection\ProjectorCollection
+        arguments:
+            $projectors:
+                - '@app.catalog.Infrastructure.persistence.projection.doctrine_orm_product_projector'
+                - '@app.catalog.Infrastructure.persistence.projection.doctrine_odm_product_projector'
 
     App\Catalog\Application\Projection\ProductProjectorMessageListener:
         class: App\Catalog\Application\Projection\ProductProjectorMessageListener
+        arguments:
+            $productProjectorCollection: '@app.catalog.Infrastructure.persistence.projection.product_projector_collection'

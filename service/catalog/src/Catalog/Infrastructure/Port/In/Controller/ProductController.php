@@ -18,35 +18,34 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Catalog\Application\Projection\ProductProjectionRepository;
 
 #[AsController]
 #[Route('/api/v1/products', name: 'products_')]
 class ProductController extends AbstractController
 {
-    public function __construct(private readonly ProductRepository $productRepository, private readonly ProductProjectionRepository $productProjectionRepository) {}
+    public function __construct(private readonly ProductRepository $productRepository) {}
 
     #[Route(methods: ['GET'], name: 'collection')]
     public function collection(#[MapQueryString] Query $query = new Query()): JsonResponse
     {
         // dd($this->productProjectionRepository->query());
-        // $product = Product::create(
-        //     new Id(),
-        //     'Product name',
-        //     'Product description',
-        //     new Pid(PidPrefix::PRO, 1),
-        //     Type::PHYSICAL,
-        //     Status::IN_DEVELOPMENT,
-        //     new Price(13.50)
-        // );
-        // $this->productRepository->add($product);
+        $product = Product::create(
+            new Id(),
+            'Product name',
+            'Product description',
+            new Pid(PidPrefix::PRO, 1),
+            Type::PHYSICAL,
+            Status::IN_DEVELOPMENT,
+            new Price(13.50)
+        );
+        $this->productRepository->add($product);
 
         // $product = $this->productRepository->get(new Id('0b941490-08f9-4dcb-a072-a69958aaedb2'));
 
-        // $product->changeName('Test');
-        // $product->changePrice(new Price(1.2));
+        $product->changeName('Test');
+        $product->changePrice(new Price(1.2));
         // $product->changeDescription('heeeeeeeehe');
-        // $this->productRepository->add($product);
+        $this->productRepository->add($product);
 
         return $this->json([
             'message' => 'Welcome to your new controller!',

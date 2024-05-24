@@ -7,7 +7,7 @@ use App\Catalog\Application\Projection\ProductProjection;
 use App\Catalog\Application\Projection\ProductProjectionRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-class DoctrineProductProjectionRepository extends ServiceEntityRepository implements ProductProjectionRepository
+class DoctrineOrmProductProjectionRepository extends ServiceEntityRepository implements ProductProjectionRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

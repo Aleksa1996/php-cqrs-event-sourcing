@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+    <document name="App\Catalog\Application\Projection\ProductProjection" db="catalog" collection="product_projections">
+        <id strategy="NONE" type="string"/>
+        <field field-name="name" type="string" name="name"/>
+        <field field-name="description" type="string" name="description"/>
+        <field field-name="pid" type="string" name="pid"/>
+        <field field-name="type" type="string" name="type"/>
+        <field field-name="status" type="string" name="status"/>
+        <field field-name="price" type="string" name="price"/>
+        <field field-name="createdOn" type="date_immutable" name="created_on"/>
+        <field field-name="updatedOn" type="date_immutable" name="updated_on"/>
+    </document>
+</doctrine-mongo-mapping>
