@@ -52,7 +52,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     imagemagick \
     libmagickwand-dev \
     ghostscript \
-    libvips42 && \
+    libvips42 \
     libmongoc-dev && \
     wget https://get.symfony.com/cli/installer -O - | bash && \
     mv /root/.symfony5/bin/symfony /usr/local/bin/symfony && \
@@ -113,7 +113,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     PICKLE_PECL_UNSAFE=1 pickle install redis --defaults && docker-php-ext-enable redis && \
     PICKLE_PECL_UNSAFE=1 pickle install amqp-2.1.1 --defaults && docker-php-ext-enable amqp && \
     PICKLE_PECL_UNSAFE=1 pickle install swoole --defaults --version-override 5.1.2 && docker-php-ext-enable swoole && \
-    PICKLE_PECL_UNSAFE=1 pickle install mongodb --defaults --version-override 5.1.2 && docker-php-ext-enable mongodb && \
+    PICKLE_PECL_UNSAFE=1 pickle install mongodb --defaults && docker-php-ext-enable mongodb && \
     curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
     composer self-update --clean-backups && \
