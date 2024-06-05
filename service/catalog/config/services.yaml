@@ -83,8 +83,17 @@ services:
         arguments:
             $productProjectorCollection: '@app.catalog.Infrastructure.persistence.projection.product_projector_collection'
 
-    App\Catalog\Application\Command\CreateProductHandler:
-        class: App\Catalog\Application\Command\CreateProductHandler
+    App\Catalog\Application\Query\ProductCollectionQueryHandler:
+        class: App\Catalog\Application\Query\ProductCollectionQueryHandler
 
     App\Catalog\Application\Query\ProductQueryHandler:
         class: App\Catalog\Application\Query\ProductQueryHandler
+
+    App\Catalog\Application\Command\CreateProductHandler:
+        class: App\Catalog\Application\Command\CreateProductHandler
+
+    App\Catalog\Application\Command\UpdateProductHandler:
+        class: App\Catalog\Application\Command\UpdateProductHandler
+
+    App\Catalog\Application\Command\DestroyProductHandler:
+        class: App\Catalog\Application\Command\DestroyProductHandler

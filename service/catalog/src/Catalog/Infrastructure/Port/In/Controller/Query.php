@@ -10,7 +10,7 @@ class Query
         #[Assert\Type('int')]
         #[Assert\LessThanOrEqual(100)]
         #[Assert\GreaterThanOrEqual(1)]
-        public readonly int $size = 25,
+        public readonly int $limit = 25,
         #[Assert\Type('int')]
         #[Assert\GreaterThanOrEqual(1)]
         public readonly int $page = 1,

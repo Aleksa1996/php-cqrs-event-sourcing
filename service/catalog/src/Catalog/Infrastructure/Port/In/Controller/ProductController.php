@@ -4,6 +4,7 @@ namespace App\Catalog\Infrastructure\Port\In\Controller;
 
 use Symfony\Component\Uid\Uuid;
 use App\Common\Application\Bus\Query\QueryBus;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Catalog\Application\Query\ProductQuery;
 use App\Common\Application\Bus\Command\CommandBus;
@@ -11,6 +12,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use App\Catalog\Application\Command\CreateProductCommand;
+use App\Catalog\Application\Command\UpdateProductCommand;
+use App\Catalog\Application\Query\ProductCollectionQuery;
+use App\Catalog\Application\Command\DestroyProductCommand;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,10 +29,9 @@ class ProductController extends AbstractController
     #[Route(methods: ['GET'], name: 'collection')]
     public function collection(#[MapQueryString] Query $query = new Query()): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/BaseController.php',
-        ]);
+        $result = $this->queryBus->handle(new ProductCollectionQuery($query->page, $query->limit));
+
+        return $this->json($result->getResult(), Response::HTTP_OK);
     }
 
     #[Route('/{id}', methods: ['GET'], name: 'item', requirements: ['id' => Requirement::UUID_V4])]
@@ -40,7 +43,7 @@ class ProductController extends AbstractController
             throw new NotFoundHttpException('product.not.found');
         }
 
-        return $this->json($result->getFirst());
+        return $this->json($result->getFirst(), Response::HTTP_OK);
     }
 
     #[Route(methods: ['POST'], name: 'create')]
@@ -58,24 +61,32 @@ class ProductController extends AbstractController
             )
         );
 
-        return $this->json($productRequest, 201);
+        return $this->json($productRequest, Response::HTTP_CREATED);
     }
 
     #[Route('/{id}', methods: ['PUT'], name: 'update', requirements: ['id' => Requirement::UUID_V4])]
-    public function update(#[MapRequestPayload] ProductRequest $productRequest): JsonResponse
+    public function update(Uuid $id, #[MapRequestPayload] ProductRequest $productRequest): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/BaseController.php',
-        ]);
+        $this->commandBus->handle(
+            new UpdateProductCommand(
+                (string) $id,
+                $productRequest->name,
+                $productRequest->description,
+                $productRequest->pid,
+                $productRequest->type,
+                $productRequest->status,
+                $productRequest->price,
+            )
+        );
+
+        return $this->json($productRequest, Response::HTTP_OK);
     }
 
     #[Route('/{id}', methods: ['DELETE'], name: 'destroy', requirements: ['id' => Requirement::UUID_V4])]
     public function destroy(Uuid $id): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/BaseController.php',
-        ]);
+        $this->commandBus->handle(new DestroyProductCommand((string) $id));
+
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 }

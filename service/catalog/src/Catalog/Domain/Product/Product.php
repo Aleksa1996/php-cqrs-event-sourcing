@@ -101,8 +101,12 @@ class Product extends AggregateRoot
         return $this->categories;
     }
 
-    public function changeName(string $name): DomainEvent
+    public function changeName(string $name): ?DomainEvent
     {
+        if ($this->name === $name) {
+            return null;
+        }
+
         return $this->applyAndRecordThat(
             new NameChanged(
                 $this->id,
@@ -112,8 +116,12 @@ class Product extends AggregateRoot
         );
     }
 
-    public function changeDescription(string $description): DomainEvent
+    public function changeDescription(string $description): ?DomainEvent
     {
+        if ($this->description === $description) {
+            return null;
+        }
+
         return $this->applyAndRecordThat(
             new DescriptionChanged(
                 $this->id,
@@ -123,8 +131,12 @@ class Product extends AggregateRoot
         );
     }
 
-    public function changePid(Pid $pid): DomainEvent
+    public function changePid(Pid $pid): ?DomainEvent
     {
+        if ($this->pid->equals($pid)) {
+            return null;
+        }
+
         return $this->applyAndRecordThat(
             new PidChanged(
                 $this->id,
@@ -134,8 +146,12 @@ class Product extends AggregateRoot
         );
     }
 
-    public function changePrice(Price $price): DomainEvent
+    public function changePrice(Price $price): ?DomainEvent
     {
+        if ($this->price->equals($price)) {
+            return null;
+        }
+
         return $this->applyAndRecordThat(
             new PriceChanged(
                 $this->id,
@@ -145,8 +161,12 @@ class Product extends AggregateRoot
         );
     }
 
-    public function changeType(Type $type): DomainEvent
+    public function changeType(Type $type): ?DomainEvent
     {
+        if ($this->type === $type) {
+            return null;
+        }
+
         return $this->applyAndRecordThat(
             new TypeChanged(
                 $this->id,

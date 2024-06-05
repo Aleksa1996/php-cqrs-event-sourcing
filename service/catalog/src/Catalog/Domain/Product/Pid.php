@@ -10,6 +10,16 @@ class Pid extends ValueObject
 
     public function __construct(private readonly PidPrefix $prefix, private readonly int $number) {}
 
+    public function getPrefix(): PidPrefix
+    {
+        return $this->prefix;
+    }
+
+    public function getNumber(): int
+    {
+        return $this->number;
+    }
+
     public static function from(string $pid): self
     {
         $e = explode(self::SEPARATOR, $pid);
@@ -36,5 +46,10 @@ class Pid extends ValueObject
             'prefix' => $this->prefix,
             'number' => $this->number,
         ];
+    }
+
+    public function equals(Pid $pid): bool
+    {
+        return $this->prefix === $pid->getPrefix() && $this->number === $pid->getNumber();
     }
 }

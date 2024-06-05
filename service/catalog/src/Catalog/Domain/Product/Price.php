@@ -10,6 +10,11 @@ class Price extends ValueObject
 
     public function __construct(private readonly float $number) {}
 
+    public function getNumber(): float
+    {
+        return $this->number;
+    }
+
     public static function from(string $price): self
     {
         $p = str_replace(self::SYMBOL, '', $price);
@@ -31,5 +36,10 @@ class Price extends ValueObject
         return [
             'number' => $this->number,
         ];
+    }
+
+    public function equals(Price $price): bool
+    {
+        return $this->number === $price->getNumber();
     }
 }

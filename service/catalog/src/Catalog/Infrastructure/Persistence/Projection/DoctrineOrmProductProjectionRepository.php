@@ -23,11 +23,19 @@ class DoctrineOrmProductProjectionRepository extends ServiceEntityRepository imp
             ->getOneOrNullResult();
     }
 
-    public function query(): array
+    public function query(array $criteria = []): array
     {
         return $this
             ->getEntityManager()
             ->createQuery('SELECT p FROM App\Catalog\Application\Projection\ProductProjection p')
+            ->getResult();
+    }
+
+    public function count(array $criteria = []): int
+    {
+        return $this
+            ->getEntityManager()
+            ->createQuery('SELECT COUNT(p) FROM App\Catalog\Application\Projection\ProductProjection p')
             ->getResult();
     }
 

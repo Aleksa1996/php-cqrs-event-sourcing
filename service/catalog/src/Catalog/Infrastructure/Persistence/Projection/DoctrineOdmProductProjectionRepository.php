@@ -23,11 +23,17 @@ class DoctrineOdmProductProjectionRepository extends ServiceDocumentRepository i
             ->getSingleResult();
     }
 
-    public function query(): array
+    public function query(array $criteria = []): array
     {
         return $this->createQueryBuilder()
             ->getQuery()
-            ->execute();
+            ->execute()
+            ->toArray();
+    }
+
+    public function count(array $criteria = []): int
+    {
+        return $this->createQueryBuilder()->count()->getQuery()->execute();
     }
 
     public function commit(ProductProjection $productProjection): void
