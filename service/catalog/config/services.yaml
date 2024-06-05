@@ -12,12 +12,24 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         public: false
 
+    # Bus
     App\Common\Infrastructure\Bus\Event\SymfonyEventBus:
         class: App\Common\Infrastructure\Bus\Event\SymfonyEventBus
         arguments:
             $messageBus: '@event.bus'
-
     App\Common\Application\Bus\Event\EventBus: '@App\Common\Infrastructure\Bus\Event\SymfonyEventBus'
+
+    App\Common\Infrastructure\Bus\Command\SymfonyCommandBus:
+        class: App\Common\Infrastructure\Bus\Command\SymfonyCommandBus
+        arguments:
+            $messageBus: '@command.bus'
+    App\Common\Application\Bus\Command\CommandBus: '@App\Common\Infrastructure\Bus\Command\SymfonyCommandBus'
+
+    App\Common\Infrastructure\Bus\Middleware\DoctrineTransactionMiddleware:
+        class: App\Common\Infrastructure\Bus\Middleware\DoctrineTransactionMiddleware
+
+    App\Common\Infrastructure\Bus\Middleware\DoctrineClearMiddleware:
+        class: App\Common\Infrastructure\Bus\Middleware\DoctrineClearMiddleware
 
     # Controller
     App\Catalog\Infrastructure\Port\In\Controller\ProductController:
@@ -61,3 +73,6 @@ services:
         class: App\Catalog\Application\Projection\ProductProjectorMessageListener
         arguments:
             $productProjectorCollection: '@app.catalog.Infrastructure.persistence.projection.product_projector_collection'
+
+    App\Catalog\Application\Command\CreateProductHandler:
+        class: App\Catalog\Application\Command\CreateProductHandler

@@ -2,10 +2,19 @@
 
 namespace App;
 
+use App\Common\Application\Bus\Command\QueryHandler;
+use App\Common\Application\Bus\Command\CommandHandler;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
+
+    protected function build(ContainerBuilder $container): void
+    {
+        $container->registerForAutoconfiguration(CommandHandler::class)->addTag('messenger.message_handler', ['bus' => 'command.bus']);
+        $container->registerForAutoconfiguration(QueryHandler::class)->addTag('messenger.message_handler', ['bus' => 'query.bus']);
+    }
 }

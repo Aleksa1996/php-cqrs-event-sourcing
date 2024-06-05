@@ -7,9 +7,12 @@ framework:
                     - doctrine_ping_connection
                     - doctrine_close_connection
                     - validation
+                    # Custom middleware to clear stateful doctrine services
+                    - App\Common\Infrastructure\Bus\Middleware\DoctrineClearMiddleware
                     - dispatch_after_current_bus
                     - doctrine_open_transaction_logger
-                    - doctrine_transaction
+                    # Wraps all handlers in a single doctrine transaction.
+                    - App\Common\Infrastructure\Bus\Middleware\DoctrineTransactionMiddleware
             query.bus:
                 middleware:
                     - validation

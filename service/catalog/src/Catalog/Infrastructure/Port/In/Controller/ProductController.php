@@ -2,19 +2,13 @@
 
 namespace App\Catalog\Infrastructure\Port\In\Controller;
 
-use App\Common\Domain\Id;
 use Symfony\Component\Uid\Uuid;
-use App\Catalog\Domain\Product\Pid;
-use App\Catalog\Domain\Product\Type;
-use App\Catalog\Domain\Product\Price;
-use App\Catalog\Domain\Product\Status;
-use App\Catalog\Domain\Product\Product;
-use App\Catalog\Domain\Product\PidPrefix;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Catalog\Domain\Product\ProductRepository;
+use App\Common\Application\Bus\Command\CommandBus;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\HttpKernel\Attribute\AsController;
+use App\Catalog\Application\Command\CreateProductCommand;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,30 +17,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/api/v1/products', name: 'products_')]
 class ProductController extends AbstractController
 {
-    public function __construct(private readonly ProductRepository $productRepository) {}
+    public function __construct(private readonly CommandBus $commandBus) {}
 
     #[Route(methods: ['GET'], name: 'collection')]
     public function collection(#[MapQueryString] Query $query = new Query()): JsonResponse
     {
-        // dd($this->productProjectionRepository->query());
-        $product = Product::create(
-            new Id(),
-            'Product name',
-            'Product description',
-            new Pid(PidPrefix::PRO, 1),
-            Type::PHYSICAL,
-            Status::IN_DEVELOPMENT,
-            new Price(13.50)
-        );
-        $this->productRepository->add($product);
-
-        // $product = $this->productRepository->get(new Id('0b941490-08f9-4dcb-a072-a69958aaedb2'));
-
-        $product->changeName('Test');
-        $product->changePrice(new Price(1.2));
-        // $product->changeDescription('heeeeeeeehe');
-        $this->productRepository->add($product);
-
         return $this->json([
             'message' => 'Welcome to your new controller!',
             'path' => 'src/Controller/BaseController.php',
@@ -65,6 +40,18 @@ class ProductController extends AbstractController
     #[Route(methods: ['POST'], name: 'create')]
     public function create(#[MapRequestPayload] ProductRequest $productRequest): JsonResponse
     {
+        $this->commandBus->handle(
+            new CreateProductCommand(
+                $productRequest->id,
+                $productRequest->name,
+                $productRequest->description,
+                $productRequest->pid,
+                $productRequest->type,
+                $productRequest->status,
+                $productRequest->price,
+            )
+        );
+
         return $this->json([
             'message' => 'Welcome to your new controller!',
             'path' => 'src/Controller/BaseController.php',
