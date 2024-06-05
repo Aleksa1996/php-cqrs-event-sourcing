@@ -25,6 +25,13 @@ services:
             $messageBus: '@command.bus'
     App\Common\Application\Bus\Command\CommandBus: '@App\Common\Infrastructure\Bus\Command\SymfonyCommandBus'
 
+    App\Common\Infrastructure\Bus\Query\SymfonyQueryBus:
+        class: App\Common\Infrastructure\Bus\Query\SymfonyQueryBus
+        arguments:
+            $messageBus: '@query.bus'
+    App\Common\Application\Bus\Query\QueryBus: '@App\Common\Infrastructure\Bus\Query\SymfonyQueryBus'
+
+    # Bus middlewares
     App\Common\Infrastructure\Bus\Middleware\DoctrineTransactionMiddleware:
         class: App\Common\Infrastructure\Bus\Middleware\DoctrineTransactionMiddleware
 
@@ -52,6 +59,8 @@ services:
     App\Catalog\Infrastructure\Persistence\Projection\DoctrineOdmProductProjectionRepository:
         class: App\Catalog\Infrastructure\Persistence\Projection\DoctrineOdmProductProjectionRepository
 
+    App\Catalog\Application\Projection\ProductProjectionRepository: '@App\Catalog\Infrastructure\Persistence\Projection\DoctrineOdmProductProjectionRepository'
+
     app.catalog.Infrastructure.persistence.projection.doctrine_orm_product_projector:
         class: App\Catalog\Infrastructure\Persistence\Projection\ProductProjector
         arguments:
@@ -76,3 +85,6 @@ services:
 
     App\Catalog\Application\Command\CreateProductHandler:
         class: App\Catalog\Application\Command\CreateProductHandler
+
+    App\Catalog\Application\Query\ProductQueryHandler:
+        class: App\Catalog\Application\Query\ProductQueryHandler

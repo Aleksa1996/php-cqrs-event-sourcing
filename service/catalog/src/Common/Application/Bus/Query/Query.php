@@ -2,4 +2,4 @@
 
 namespace App\Common\Application\Bus\Query;
 
-interface QueryHandler {}
+abstract class Query {}

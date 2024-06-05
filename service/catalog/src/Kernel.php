@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Common\Application\Bus\Command\QueryHandler;
+use App\Common\Application\Bus\Query\QueryHandler;
 use App\Common\Application\Bus\Command\CommandHandler;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
