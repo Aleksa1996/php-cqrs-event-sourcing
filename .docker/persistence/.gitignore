@@ -1,3 +1,6 @@
 mongo/
 postgres/
 minio/
+grafana/
+alertmanager/
+prometheus/

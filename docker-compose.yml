@@ -28,8 +28,6 @@ services:
         image: postgres:13.15-bookworm
         volumes:
             - ./.docker/persistence/postgres:/var/lib/postgresql/data
-        ports:
-            - "5432:5432"
         restart: unless-stopped
         environment:
             - POSTGRES_USER=root
@@ -44,8 +42,6 @@ services:
         image: mongo:7.0.9-jammy
         volumes:
             - ./.docker/persistence/mongo:/data/db
-        ports:
-            - "27017:27017"
         restart: unless-stopped
         environment:
             - MONGO_INITDB_ROOT_USERNAME=root
@@ -123,6 +119,108 @@ services:
             - "traefik.http.routers.catalog-service.rule=Host(`catalog-service.local`)"
             - "traefik.http.routers.catalog-service.service=catalog-service"
             - "traefik.http.services.catalog-service.loadbalancer.server.port=80"
+# ---------------------------------------------------------------------------- #
+#                                 Prometheus                                   #
+# ---------------------------------------------------------------------------- #
+    prometheus:
+        container_name: prometheus
+        image: prom/prometheus
+        restart: unless-stopped
+        networks:
+            - main_net
+        volumes:
+            - ./.docker/config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+            - ./.docker/config/prometheus/alert.rules:/etc/prometheus/alert.rules
+            - ./.docker/persistence/prometheus:/prometheus
+        command:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/prometheus
+            - --web.console.libraries=/usr/share/prometheus/console_libraries
+            - --web.console.templates=/usr/share/prometheus/consoles
+            - --web.enable-lifecycle
+            - --web.enable-admin-api
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.prometheus.entrypoints=web"
+            - "traefik.http.routers.prometheus.rule=Host(`prometheus.local`)"
+            - "traefik.http.routers.prometheus.service=prometheus"
+            - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+# ---------------------------------------------------------------------------- #
+#                                 Alert manager                                #
+# ---------------------------------------------------------------------------- #
+    alertmanager:
+        container_name: alertmanager
+        image: prom/alertmanager
+        restart: unless-stopped
+        networks:
+            - main_net
+        volumes:
+            - ./.docker/config/alertmanager/config.yml:/etc/alertmanager/config.yml
+            - ./.docker/persistence/alertmanager:/alertmanager
+        command:
+            - --config.file=/etc/alertmanager/config.yml
+            - --storage.path=/alertmanager
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.alertmanager.entrypoints=web"
+            - "traefik.http.routers.alertmanager.rule=Host(`alertmanager.local`)"
+            - "traefik.http.routers.alertmanager.service=alertmanager"
+            - "traefik.http.services.alertmanager.loadbalancer.server.port=9093"
+# ---------------------------------------------------------------------------- #
+#                                 Grafana                                      #
+# ---------------------------------------------------------------------------- #
+    grafana:
+        container_name: grafana
+        image: grafana/grafana
+        restart: unless-stopped
+        networks:
+            - main_net
+        environment:
+            - GF_SECURITY_ADMIN_PASSWORD=admin123
+            - GF_USERS_ALLOW_SIGN_UP=false
+        volumes:
+            - ./.docker/persistence/grafana:/var/lib/grafana
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.grafana.entrypoints=web"
+            - "traefik.http.routers.grafana.rule=Host(`grafana.local`)"
+            - "traefik.http.routers.grafana.service=grafana"
+            - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+# ---------------------------------------------------------------------------- #
+#                                 Node exporter                                #
+# ---------------------------------------------------------------------------- #
+    node-exporter:
+        container_name: node-exporter
+        image: prom/node-exporter
+        restart: unless-stopped
+        networks:
+            - main_net
+        # volumes:
+        #     - /proc:/host/proc:ro
+        #     - /sys:/host/sys:ro
+        #     - /:/rootfs:ro
+        # command:
+        #     - --path.procfs=/host/proc
+        #     - --path.sysfs=/host/sys
+        #     - --collector.filesystem.ignored-mount-points
+        #     - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+# ---------------------------------------------------------------------------- #
+#                                 Cadvisor                                     #
+# ---------------------------------------------------------------------------- #
+    cadvisor:
+        container_name: cadvisor
+        image: google/cadvisor
+        restart: unless-stopped
+        networks:
+            - main_net
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:ro
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+            - /dev/disk/:/dev/disk:ro
+            - /mnt/windows_docker/:/rootfs/var/lib/docker:ro
+        privileged: true
 # ---------------------------------------------------------------------------- #
 #                                 Network                                      #
 # ---------------------------------------------------------------------------- #
