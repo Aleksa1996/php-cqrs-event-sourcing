@@ -15,6 +15,7 @@ use App\Common\Domain\OptimisticLockingException;
 use App\Catalog\Domain\Product\DescriptionChanged;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Common\Domain\Event\EventStore as IEventStore;
+use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
 use Symfony\Component\Messenger\Stamp\DispatchAfterCurrentBusStamp;
 
 class EventStore implements IEventStore
@@ -89,7 +90,7 @@ class EventStore implements IEventStore
         foreach ($events as $event) {
             $this->eventBus->handle(
                 $event,
-                [new DispatchAfterCurrentBusStamp()]
+                [new DispatchAfterCurrentBusStamp(), new TransportNamesStamp(['event_store'])]
             );
         }
     }

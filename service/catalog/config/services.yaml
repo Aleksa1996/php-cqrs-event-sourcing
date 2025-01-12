@@ -78,8 +78,8 @@ services:
                 - '@app.catalog.Infrastructure.persistence.projection.doctrine_orm_product_projector'
                 - '@app.catalog.Infrastructure.persistence.projection.doctrine_odm_product_projector'
 
-    App\Catalog\Application\Projection\ProductProjectorEventListener:
-        class: App\Catalog\Application\Projection\ProductProjectorEventListener
+    App\Catalog\Application\Projection\ProductProjectorMessageListener:
+        class: App\Catalog\Application\Projection\ProductProjectorMessageListener
         arguments:
             $productProjectorCollection: '@app.catalog.Infrastructure.persistence.projection.product_projector_collection'
 
