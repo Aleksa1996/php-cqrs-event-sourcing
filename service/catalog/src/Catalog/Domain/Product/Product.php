@@ -186,12 +186,7 @@ class Product extends AggregateRoot
         return $this->applyAndRecordThat(
             new Deleted(
                 $this->id,
-                $this->name,
-                $this->description,
-                $this->pid,
-                $this->type,
-                $this->status,
-                $this->price,
+                true,
                 $this->getNextOptimisticConcurrencyVersion()
             )
         );

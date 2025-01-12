@@ -12,12 +12,12 @@ use App\Catalog\Domain\Product\DescriptionChanged;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use App\Common\Infrastructure\Persistence\Projection\ProjectorCollection;
 
-class ProductProjectorMessageListener
+class ProductProjectorEventListener
 {
     public function __construct(private readonly ProjectorCollection $productProjectorCollection) {}
 
     #[AsMessageHandler]
-    public function onUserEvent(Created|NameChanged|DescriptionChanged|PidChanged|PriceChanged|TypeChanged|Deleted $event): void
+    public function onProductEvent(Created|NameChanged|DescriptionChanged|PidChanged|PriceChanged|TypeChanged|Deleted $event): void
     {
         $this->productProjectorCollection->project($event);
     }

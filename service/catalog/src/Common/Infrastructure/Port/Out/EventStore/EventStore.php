@@ -4,6 +4,7 @@ namespace App\Common\Infrastructure\Port\Out\EventStore;
 
 use App\Common\Domain\Id;
 use App\Catalog\Domain\Product\Created;
+use App\Catalog\Domain\Product\Deleted;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Catalog\Domain\Product\PidChanged;
 use App\Catalog\Domain\Product\NameChanged;
@@ -14,7 +15,6 @@ use App\Common\Domain\OptimisticLockingException;
 use App\Catalog\Domain\Product\DescriptionChanged;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Common\Domain\Event\EventStore as IEventStore;
-use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
 use Symfony\Component\Messenger\Stamp\DispatchAfterCurrentBusStamp;
 
 class EventStore implements IEventStore
@@ -74,6 +74,7 @@ class EventStore implements IEventStore
             'service.catalog.product.pid_changed' => PidChanged::class,
             'service.catalog.product.price_changed' => PriceChanged::class,
             'service.catalog.product.type_changed' => TypeChanged::class,
+            'service.catalog.product.deleted' => Deleted::class,
         ];
 
         if (!isset($mapping[$event->getType()])) {
@@ -88,7 +89,7 @@ class EventStore implements IEventStore
         foreach ($events as $event) {
             $this->eventBus->handle(
                 $event,
-                [new DispatchAfterCurrentBusStamp(), new TransportNamesStamp('event_store')]
+                [new DispatchAfterCurrentBusStamp()]
             );
         }
     }
