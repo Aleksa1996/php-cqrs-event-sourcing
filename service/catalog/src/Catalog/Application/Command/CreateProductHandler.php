@@ -28,7 +28,7 @@ class CreateProductHandler implements CommandHandler
             new Price($command->getPrice())
         );
 
-        $this->productRepository->add($product);
+        $this->productRepository->commit($product);
 
         return new CommandResult();
     }

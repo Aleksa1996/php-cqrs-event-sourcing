@@ -6,5 +6,7 @@ interface AggregateRepository
 {
     public function get(Id $id): ?AggregateRoot;
 
-    public function add(AggregateRoot $aggregate): void;
+    public function remove(AggregateRoot $aggregate): void;
+
+    public function commit(AggregateRoot $aggregate): void;
 }

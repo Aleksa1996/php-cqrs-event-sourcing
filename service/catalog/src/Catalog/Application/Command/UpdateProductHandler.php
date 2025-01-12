@@ -33,7 +33,7 @@ class UpdateProductHandler implements CommandHandler
         // $product->changeStatus(Status::from($command->getStatus()));
         $product->changePrice(new Price($command->getPrice()));
 
-        $this->productRepository->add($product);
+        $this->productRepository->commit($product);
 
         return new CommandResult();
     }
