@@ -3,6 +3,7 @@
 namespace App\Catalog\Application\Projection;
 
 use App\Catalog\Domain\Product\Created;
+use App\Catalog\Domain\Product\Deleted;
 use App\Catalog\Domain\Product\PidChanged;
 use App\Catalog\Domain\Product\NameChanged;
 use App\Catalog\Domain\Product\TypeChanged;
@@ -16,7 +17,7 @@ class ProductProjectorMessageListener
     public function __construct(private readonly ProjectorCollection $productProjectorCollection) {}
 
     #[AsMessageHandler]
-    public function onUserEvent(Created|NameChanged|DescriptionChanged|PidChanged|PriceChanged|TypeChanged $event): void
+    public function onUserEvent(Created|NameChanged|DescriptionChanged|PidChanged|PriceChanged|TypeChanged|Deleted $event): void
     {
         $this->productProjectorCollection->project($event);
     }

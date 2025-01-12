@@ -41,4 +41,10 @@ class DoctrineOdmProductProjectionRepository extends ServiceDocumentRepository i
         $this->getDocumentManager()->persist($productProjection);
         $this->getDocumentManager()->flush();
     }
+
+    public function remove(ProductProjection $productProjection): void
+    {
+        $this->getDocumentManager()->remove($productProjection);
+        $this->getDocumentManager()->flush();
+    }
 }

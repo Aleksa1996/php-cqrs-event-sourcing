@@ -23,13 +23,6 @@ class ProductRepository implements IProductRepository
         return Product::reconstruct($events);
     }
 
-    public function remove(AggregateRoot $aggregate): void
-    {
-        $events = $aggregate->dequeueRecordedDomainEvents();
-
-        $this->eventStore->commit($aggregate->getId(), $events, $aggregate->getOptimisticConcurrencyVersion());
-    }
-
     public function commit(AggregateRoot $aggregate): void
     {
         $events = $aggregate->dequeueRecordedDomainEvents();

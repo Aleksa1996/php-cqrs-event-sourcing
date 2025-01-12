@@ -3,6 +3,7 @@
 namespace App\Catalog\Infrastructure\Persistence\Projection;
 
 use App\Catalog\Domain\Product\Created;
+use App\Catalog\Domain\Product\Deleted;
 use App\Catalog\Domain\Product\PidChanged;
 use App\Catalog\Domain\Product\NameChanged;
 use App\Catalog\Domain\Product\TypeChanged;
@@ -110,5 +111,16 @@ class ProductProjector extends BaseProjector implements IProductProjector
         $productProjection->changePrice((string) $domainEvent->getPrice());
 
         $this->productProjectionRepository->commit($productProjection);
+    }
+
+    public function projectDeleted(Deleted $domainEvent): void
+    {
+        $productProjection = $this->productProjectionRepository->findById((string) $domainEvent->getEntityId());
+
+        if (empty($productProjection)) {
+            return;
+        }
+
+        $this->productProjectionRepository->remove($productProjection);
     }
 }

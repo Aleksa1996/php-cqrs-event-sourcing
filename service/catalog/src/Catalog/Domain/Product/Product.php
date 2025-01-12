@@ -24,6 +24,7 @@ class Product extends AggregateRoot
         private Type $type,
         private Status $status = Status::IN_DEVELOPMENT,
         private ?Price $price = null,
+        private bool $deleted = false,
     ) {
         parent::__construct($id);
     }
@@ -176,6 +177,26 @@ class Product extends AggregateRoot
         );
     }
 
+    public function delete(): ?DomainEvent
+    {
+        if ($this->deleted === true) {
+            return null;
+        }
+
+        return $this->applyAndRecordThat(
+            new Deleted(
+                $this->id,
+                $this->name,
+                $this->description,
+                $this->pid,
+                $this->type,
+                $this->status,
+                $this->price,
+                $this->getNextOptimisticConcurrencyVersion()
+            )
+        );
+    }
+
     // public function changeStatus(Status $status): void
     // {
     //     $this->applyAndRecordThat(new StatusChanged($this->id, $status));
@@ -247,6 +268,13 @@ class Product extends AggregateRoot
     private function applyTypeChanged(TypeChanged $event): void
     {
         $this->type = $event->getType();
+        $this->updatedOn = $event->getOccurredOn();
+    }
+
+    // @phpstan-ignore-next-line
+    private function applyDeleted(Deleted $event): void
+    {
+        $this->deleted = $event->getDeleted();
         $this->updatedOn = $event->getOccurredOn();
     }
 

@@ -3,6 +3,7 @@
 namespace App\Catalog\Application\Projection;
 
 use App\Catalog\Domain\Product\Created;
+use App\Catalog\Domain\Product\Deleted;
 use App\Catalog\Domain\Product\PidChanged;
 use App\Catalog\Domain\Product\NameChanged;
 use App\Catalog\Domain\Product\TypeChanged;
@@ -25,4 +26,6 @@ interface ProductProjector extends Projector
     // public function projectStatusChanged(StatusChanged $domainEvent): void;
 
     public function projectPriceChanged(PriceChanged $domainEvent): void;
+
+    public function projectDeleted(Deleted $domainEvent): void;
 }

@@ -44,4 +44,10 @@ class DoctrineOrmProductProjectionRepository extends ServiceEntityRepository imp
         $this->getEntityManager()->persist($productProjection);
         $this->getEntityManager()->flush();
     }
+
+    public function remove(ProductProjection $productProjection): void
+    {
+        $this->getEntityManager()->remove($productProjection);
+        $this->getEntityManager()->flush();
+    }
 }

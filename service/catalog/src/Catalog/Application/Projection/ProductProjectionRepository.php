@@ -11,4 +11,6 @@ interface ProductProjectionRepository
     public function count(array $criteria = []): int;
 
     public function commit(ProductProjection $productProjection): void;
+
+    public function remove(ProductProjection $productProjection): void;
 }
