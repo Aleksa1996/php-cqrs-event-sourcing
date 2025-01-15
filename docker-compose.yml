@@ -120,6 +120,26 @@ services:
             - "traefik.http.routers.catalog-service.service=catalog-service"
             - "traefik.http.services.catalog-service.loadbalancer.server.port=80"
 # ---------------------------------------------------------------------------- #
+#                                 File                                         #
+# ---------------------------------------------------------------------------- #
+    file-service:
+        container_name: file-service
+        image: local-build/file-service
+        build:
+            context: ./service/file
+            dockerfile: Dockerfile
+        volumes:
+            - ./service/file:/var/www/html
+        restart: unless-stopped
+        networks:
+            - main_net
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.file-service.entrypoints=web"
+            - "traefik.http.routers.file-service.rule=Host(`file-service.local`)"
+            - "traefik.http.routers.file-service.service=file-service"
+            - "traefik.http.services.file-service.loadbalancer.server.port=80"
+# ---------------------------------------------------------------------------- #
 #                                 Prometheus                                   #
 # ---------------------------------------------------------------------------- #
     prometheus:
